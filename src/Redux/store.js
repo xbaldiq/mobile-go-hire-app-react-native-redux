@@ -9,7 +9,7 @@ const enhancers = applyMiddleware(logger, rpm);
 const store = createStore(reducers, enhancers);
 
 store.subscribe(() => {
-    console.log('state updated')
+    // console.log('state updated')
 })
 
 export default store;

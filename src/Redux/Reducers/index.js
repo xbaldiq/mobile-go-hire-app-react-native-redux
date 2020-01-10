@@ -7,9 +7,11 @@ import { combineReducers } from "redux";
 // import engineerList from "./Company/Data/engineerList";
 
 import loginReducer from './Login/login'
+import RegisterReducer from './Login/register'
 
 const reducers = combineReducers({
-  loginReducer
+  loginReducer,
+  RegisterReducer,
   // engineerProjectList,
   // engineerProfile,
   // engineerSkill,

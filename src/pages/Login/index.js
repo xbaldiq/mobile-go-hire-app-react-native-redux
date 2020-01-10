@@ -19,7 +19,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import {API_URL} from 'react-native-dotenv';
 import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
-// import {AsyncStorage} from 'react-native';
 import {storeData, retrieveData} from '../../utils';
 import {loginAccount} from '../../Redux/Actions/Authorization';
 
@@ -65,12 +64,15 @@ const styles = StyleSheet.create({
 });
 
 class Login extends Component {
-  constructor() {
-    super();
-
-  }
 
   componentDidMount = async () => {
+    if (await retrieveData('token')) {
+      this.props.navigation.navigate('Home');
+    }
+  }
+
+  componentDidUpdate = async (prevState) => {
+    // Trigger login button
     if (await retrieveData('token')) {
       this.props.navigation.navigate('Home');
     }
@@ -82,6 +84,7 @@ class Login extends Component {
     user_type: 'engineer',
     username: '',
     password: '',
+    loggedIn: false
   };
 
   onClickSubmit = async () => {
@@ -98,9 +101,10 @@ class Login extends Component {
         storeData('userID', res.value.data.data[0].id);
         storeData('username', res.value.data.data[0].username);
         storeData('user_type', res.value.data.data[0].user_type);
+        this.setState({loggedIn: !this.state.loggedIn})
         // console.log(res.value.data.data[0]);
       })
-      .catch(err => console.log('error:', err));
+      .catch(err => alert('error'));
   };
 
   render() {

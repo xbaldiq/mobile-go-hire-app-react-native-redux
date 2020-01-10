@@ -18,14 +18,16 @@ import { getAllEngineer } from '../../Redux/Actions/Data/Engineer/'
 // import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
-
+import AsyncStorage from '@react-native-community/async-storage';
+import { Navbar } from '../../component/'
 
 export default class Home extends Component {
 constructor(){
   super()
-  
 }
+
   state = {
+    loggedIn: true,
     token: '',
     search: '',
     searchQuery: '',
@@ -75,11 +77,30 @@ constructor(){
 
   componentDidMount = async () => {
     this.setState({token: await retrieveData('token')})
+
+    if (! await retrieveData('token')) {
+      this.props.navigation.navigate('Login');
+    }
+    else{
+      this.props.navigation.navigate('Home');
+    }
   } 
+
+  componentDidUpdate = async (prevState) => {
+    
+  }
 
   updateSearch = search => {
     this.setState({search});
   };
+
+  logoutAccount = async () => {
+    await AsyncStorage.clear().then(() => 
+    { 
+      this.props.navigation.navigate('Login')
+      this.setState({loggedIn: !this.state.loggedIn})
+    });
+  }
 
   getEngineerList = async () => {
     await this.props.dispatch(
@@ -96,47 +117,15 @@ constructor(){
     )
   }
 
-
   render() {
     const {search, searchQuery} = this.state;
 
     return (
-      // Container
+      // Root Container
       <View flexDirection="column" width="100%">
-        
         {/* App Bar */}
-        <View
-          flexDirection="row"
-          style={{
-            backgroundColor: 'white',
-            padding: 10,
-            height: 70,
-            justifyContent: 'space-around',
-            alignItems: 'center',
-          }}>
-          <Image
-            style={{width: 150, height: 100}}
-            source={require('../../img/logoArkademy.png')}
-          />
-          <OcticonsIcon name="sign-out" size={30} color="#4F8EF7" />
-        </View>
-
-        {/* Search Bar */}
-        <View>
-          <SearchBar
-            platform="default"
-            lightTheme
-            placeholder="Type Here..."
-            onChangeText={this.updateSearch}
-            value={search}
-            round
-            clearIcon
-            searchIcon
-            containerStyle={{backgroundColor: 'white'}}
-            inputContainerStyle={{backgroundColor: 'white'}}
-          />
-        </View>
-
+        <Navbar search={this.state.search} updateSearch={this.updateSearch} logoutAccount={this.logoutAccount}/>
+        
         <View
           style={{
             flex: 1,
