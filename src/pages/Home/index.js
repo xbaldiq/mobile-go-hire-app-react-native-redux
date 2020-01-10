@@ -10,12 +10,23 @@ import {
 } from 'react-native';
 
 import {Card} from '../../component';
-
+import {storeData, retrieveData} from '../../utils';
 import {SearchBar} from 'react-native-elements';
 import {Avatar} from 'react-native-paper';
+import axios from 'axios'
+import { getAllEngineer } from '../../Redux/Actions/Data/Engineer/'
+// import Icon from 'react-native-vector-icons/Ionicons';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import OcticonsIcon from 'react-native-vector-icons/Octicons';
+
 
 export default class Home extends Component {
+constructor(){
+  super()
+  
+}
   state = {
+    token: '',
     search: '',
     searchQuery: '',
     response: [
@@ -62,9 +73,29 @@ export default class Home extends Component {
     ],
   };
 
+  componentDidMount = async () => {
+    this.setState({token: await retrieveData('token')})
+  } 
+
   updateSearch = search => {
     this.setState({search});
   };
+
+  getEngineerList = async () => {
+    await this.props.dispatch(
+      getAllEngineer(
+        {
+          sort: this.state.sort_by,
+          order: this.state.order,
+          page: this.state.page,
+          limit: this.state.limit,
+          [this.state.search_by]: this.state.search
+        },
+        this.state.token
+      )
+    )
+  }
+
 
   render() {
     const {search, searchQuery} = this.state;
@@ -72,6 +103,7 @@ export default class Home extends Component {
     return (
       // Container
       <View flexDirection="column" width="100%">
+        
         {/* App Bar */}
         <View
           flexDirection="row"
@@ -86,6 +118,7 @@ export default class Home extends Component {
             style={{width: 150, height: 100}}
             source={require('../../img/logoArkademy.png')}
           />
+          <OcticonsIcon name="sign-out" size={30} color="#4F8EF7" />
         </View>
 
         {/* Search Bar */}
@@ -105,14 +138,11 @@ export default class Home extends Component {
         </View>
 
         <View
-          // flexDirection="row"
           style={{
             flex: 1,
             flexDirection: 'row',
             flexWrap: 'wrap',
-            // alignSelf: 'baseline',
             justifyContent: 'center',
-            // alignItems: 'center',
           }}>
           <Card />
           <Card />
@@ -137,6 +167,7 @@ export default class Home extends Component {
   }
 }
 
+// eslint-disable-next-line no-lone-blocks
 {
   /* <Searchbar
             placeholder="Search"

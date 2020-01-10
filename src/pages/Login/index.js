@@ -11,10 +11,17 @@ import {
   TouchableOpacity,
   Picker,
 } from 'react-native';
+import axios from 'axios';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Input, ThemeProvider, Button, ButtonGroup} from 'react-native-elements';
 import img1 from '../../img/loginPict1.svg';
 import LinearGradient from 'react-native-linear-gradient';
+import {API_URL} from 'react-native-dotenv';
+import {connect} from 'react-redux';
+import AsyncStorage from '@react-native-community/async-storage';
+// import {AsyncStorage} from 'react-native';
+import {storeData, retrieveData} from '../../utils';
+import {loginAccount} from '../../Redux/Actions/Authorization';
 
 const styles = StyleSheet.create({
   container: {
@@ -57,67 +64,93 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Login extends Component {
+class Login extends Component {
+  constructor() {
+    super();
+
+  }
+
+  componentDidMount = async () => {
+    if (await retrieveData('token')) {
+      this.props.navigation.navigate('Home');
+    }
+  }
+
   state = {
     role: 'company',
     selectedIndex: 0,
+    user_type: 'engineer',
+    username: '',
+    password: '',
   };
 
-  updateIndex = selectedIndex => {
-    this.setState({selectedIndex});
+  onClickSubmit = async () => {
+    await this.props
+      .dispatch(
+        loginAccount({
+          username: this.state.username,
+          password: this.state.password,
+          user_type: this.state.user_type,
+        }),
+      )
+      .then(res => {
+        storeData('token', res.value.data.data[0].token);
+        storeData('userID', res.value.data.data[0].id);
+        storeData('username', res.value.data.data[0].username);
+        storeData('user_type', res.value.data.data[0].user_type);
+        // console.log(res.value.data.data[0]);
+      })
+      .catch(err => console.log('error:', err));
   };
 
   render() {
-    const buttons = ['Company', 'Engineer'];
-    const { selectedIndex } = this.state;
+    const buttons = ['Engineer', 'Company'];
 
     return (
       <ThemeProvider>
-        {/* <ScrollView style={styles.scrollView}> */}
         <View style={styles.container}>
           {/* Logo screen */}
-
           <LinearGradient colors={['#95008f', '#000000']} style={styles.logo}>
-            {/* <Image
-              style={{width: 400, height: 400, flex: 1}}
-              source={require('../../img/loginPict1.svg')}
-            /> */}
-
             <Text h1 style={{color: 'white'}}>
               Please Login
             </Text>
-            {/* <Text styles={{flex: 1}}>Please login</Text> */}
           </LinearGradient>
 
           {/* Form */}
           <View style={styles.form}>
             <View style={{width: 350}}>
-              <Input placeholder="Username" />
+              <Input
+                onChangeText={username => this.setState({username})}
+                placeholder="Username"
+                id="username"
+                value={this.state.username}
+              />
             </View>
             <View style={{width: 350}}>
-              <Input placeholder="Password" />
+              <Input
+                placeholder="Password"
+                secureTextEntry={true}
+                id="password"
+                onChangeText={password => this.setState({password})}
+                value={this.state.password}
+              />
             </View>
 
             {/* Role Selector */}
             <ButtonGroup
-              onPress={this.updateIndex}
+              onPress={selectedIndex => {
+                this.setState({selectedIndex});
+                if (selectedIndex === 0) {
+                  this.setState({user_type: 'engineer'});
+                } else if (selectedIndex === 1) {
+                  this.setState({user_type: 'company'});
+                }
+              }}
               selectedIndex={this.state.selectedIndex}
               buttons={buttons}
               // style={{}}
               containerStyle={{height: 40, width: 350, marginTop: 20}}
             />
-
-            {/* <Picker
-              placeholder="role"
-              selectedValue={'ggwp'}
-              style={{height: 50, width: 200}}
-              //   onValueChange={(itemValue, itemIndex) =>
-              //     this.setState({role: itemValue})
-              //   }
-            >
-              <Picker.Item label="Engineer" value="java" />
-              <Picker.Item label="Company" value="js" />
-            </Picker> */}
 
             {/* Login Button */}
             <View style={{backgroundColor: '#FFF', marginTop: 20}}>
@@ -127,9 +160,10 @@ export default class Login extends Component {
                   title="Login"
                   type="outline"
                   buttonStyle={{width: 350}}
-                  onPress={() => {
+                  onPress={e => {
+                    this.onClickSubmit(e);
                     // alert('login!');
-                    this.props.navigation.navigate('Home');
+                    // this.props.navigation.navigate('Home');
                   }}
                 />
               </TouchableOpacity>
@@ -147,8 +181,15 @@ export default class Login extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        {/* </ScrollView> */}
       </ThemeProvider>
     );
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    loginProps: state.loginReducer,
+  };
+};
+
+export default connect(mapStateToProps)(Login);

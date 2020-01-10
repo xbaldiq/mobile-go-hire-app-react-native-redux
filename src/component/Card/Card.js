@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import {View, Button, Image, Text, ImageBackground} from 'react-native';
 import './CardOld';
-import totalProjectIcon from '../../img/iconProject';
-import successRateIcon from '../../img/iconSuccessRate';
+import totalProjectIcon from '../../img/iconProject.png';
+import successRateIcon from '../../img/iconSuccessRate.png';
 // import successRate from './../img/iconSuccess.svg'
 
 export default class Card extends Component {
   render() {
     return (
-      <View style={{padding: 3, borderRadius: 20, fontFamily: 'Roboto'}}>
+      <View style={{padding: 5, borderRadius: 20, fontFamily: 'Roboto'}}>
         {/* <Image
             source={require('../../img/michael-afonso-Z_bTArFy6ks-unsplash.jpg')}
             style={{
@@ -21,6 +21,7 @@ export default class Card extends Component {
             }}></Image> */}
 
         <ImageBackground
+          imageStyle={{borderRadius: 20}}
           style={{
             //   flex:1,
             width: 190,
@@ -33,12 +34,14 @@ export default class Card extends Component {
           {/* Context */}
           <View
             style={{
+              borderRadius: 20,
               justifyContent: 'flex-end',
               alignItems: 'center',
               width: '100%',
               height: 'auto',
               backgroundColor: 'rgba(0, 0, 0, 0.6)',
               fontFamily: 'Roboto',
+              padding: 5,
             }}>
             <Text style={{color: 'white', fontWeight: 'bold'}}>
               Natalie Dormer
@@ -46,16 +49,29 @@ export default class Card extends Component {
             <Text style={{color: 'white', fontStyle: 'italic'}}>
               Fullstack Dev
             </Text>
-            <Text style={{color: 'white', fontSize: 11}}>77 Project</Text>
-            <Text style={{color: 'white', fontSize: 11}}>99% Success Rate</Text>
+
+            {/* Total Project */}
+            <View style={{flexDirection: 'row'}}>
+              <Image source={totalProjectIcon} style={{marginRight: 5}} />
+              <Text style={{color: 'white', fontSize: 11}}>77 Project</Text>
+            </View>
+
+            {/* Success Rate*/}
+            <View style={{flexDirection: 'row'}}>
+              <Image source={successRateIcon} style={{marginRight: 5}} />
+              <Text style={{color: 'white', fontSize: 11}}>
+                99% Success Rate
+              </Text>
+            </View>
+
             <View
               style={{
-                  width: '60%',
-                borderWidth: 0.5,
-                borderColor:'white',
-              }}>
-            </View>
-            <Text style={{color: 'white'}}>Javascript, Redux </Text>
+                width: '80%',
+                borderWidth: 1,
+                borderColor: 'white',
+                marginVertical: 5,
+              }}></View>
+            <Text style={{color: 'white', textAlign: 'center'}}>Flutter, React Native, Swift, Ionic</Text>
           </View>
         </ImageBackground>
       </View>
