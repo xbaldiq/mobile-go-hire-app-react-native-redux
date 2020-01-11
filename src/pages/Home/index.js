@@ -9,6 +9,7 @@ import {
   Image,
   TouchableHighlight,
   TouchableOpacity,
+  Button,
 } from 'react-native';
 
 import {Card} from '../../component';
@@ -20,11 +21,13 @@ import {getAllEngineer} from '../../Redux/Actions/Data/Engineer/';
 // import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-community/async-storage';
 import ActionButton from 'react-native-action-button';
 import {connect} from 'react-redux';
 import {Navbar} from '../../component/';
+import RBSheet from 'react-native-raw-bottom-sheet';
 
 class Home extends Component {
   constructor() {
@@ -48,22 +51,18 @@ class Home extends Component {
   };
 
   componentDidMount = async () => {
-    this.setState({token: await retrieveData('token')}, () => this.getAllEngineer());
     // get all engineer
-   
     if (!(await retrieveData('token'))) {
       this.props.navigation.navigate('Login');
     } else {
-      this.props.navigation.navigate('Home');
+      this.setState({token: await retrieveData('token')}, () =>
+        this.getAllEngineer(),
+      );
     }
   };
 
-  componentDidUpdate = async prevState => {
-    // this.getAllEngineer();
-  };
-
   updateSearch = search => {
-    this.setState({search});
+    this.setState({search}, () => this.getAllEngineer());
   };
 
   logoutAccount = async () => {
@@ -115,10 +114,17 @@ class Home extends Component {
         this.state.token,
       ),
     );
-    this.setState({
-      response: this.props.engineerList.response,
-      total_data: this.props.engineerList.total_data,
-    }, () => this.setTotalPage());
+    this.setState(
+      {
+        response: this.props.engineerList.response,
+        total_data: this.props.engineerList.total_data,
+      },
+      () => this.setTotalPage(),
+    );
+  };
+
+  onChange = (key, value) => {
+    this.setState({[key]: value}, this.getAllEngineer);
   };
 
   render() {
@@ -137,7 +143,6 @@ class Home extends Component {
           updateSearch={this.updateSearch}
           logoutAccount={this.logoutAccount}
         />
-
         <ScrollView>
           <View
             style={{
@@ -182,6 +187,9 @@ class Home extends Component {
           <TouchableOpacity onPress={() => this.pagination('left')}>
             <Ionicons name="ios-arrow-dropleft" size={40} color="white" />
           </TouchableOpacity>
+
+          {/* <RawModal /> */}
+
           <TouchableOpacity onPress={() => this.pagination('right')}>
             <Ionicons name="ios-arrow-dropright" size={40} color="white" />
           </TouchableOpacity>
@@ -192,7 +200,12 @@ class Home extends Component {
             console.log('hi');
           }}
         /> */}
-        <Testing />
+        <FloatingButton
+          order={this.state.order}
+          search_by={this.state.search_by}
+          limit={this.state.limit}
+          onChange={this.onChange}
+        />
       </View>
     );
   }
@@ -214,27 +227,88 @@ const styles = StyleSheet.create({
   },
 });
 
-const Testing = () => {
+const FloatingButton = props => {
   return (
     <ActionButton buttonColor="rgba(122,215,255,1)" position="center">
+      {/* Sort */}
       <ActionButton.Item
         buttonColor="#9b59b6"
-        title="New Task"
-        onPress={() => console.log('notes tapped!')}>
-        <Ionicons name="md-create" style={styles.actionButtonIcon} />
+        title={`${props.order.toUpperCase()} Sorting`}
+        onPress={() => {
+          if (props.order == 'asc') {
+            props.onChange('order', 'desc');
+          } else {
+            props.onChange('order', 'asc');
+          }
+        }}>
+        {props.order == 'asc' ? (
+          <MaterialCommunityIcons
+            name="sort-ascending"
+            style={styles.actionButtonIcon}
+          />
+        ) : (
+          <MaterialCommunityIcons
+            name="sort-descending"
+            style={styles.actionButtonIcon}
+          />
+        )}
       </ActionButton.Item>
+
+      {/* Filter */}
       <ActionButton.Item
         buttonColor="#3498db"
-        title="Notifications"
-        onPress={() => console.log('notes notification!')}>
-        <Ionicons name="md-notifications-off" style={styles.actionButtonIcon} />
+        title={`Filter by ${props.search_by.toUpperCase()}`}
+        onPress={() => {
+          if (props.search_by == 'name') {
+            props.onChange('search_by', 'skill');
+          } else {
+            props.onChange('search_by', 'name');
+          }
+        }}>
+        <Ionicons name="ios-search" style={styles.actionButtonIcon} />
       </ActionButton.Item>
+
+      {/* Limit */}
       <ActionButton.Item
         buttonColor="#1abc9c"
-        title="All Tasks"
-        onPress={() => console.log('notes ')}>
-        <Ionicons name="md-done-all" style={styles.actionButtonIcon} />
+        title={`${props.limit} items per page`}
+        onPress={() => {
+          if (props.limit == 5) {
+            props.onChange('limit', 10);
+          } else if (props.limit == 10) {
+            props.onChange('limit', 20);
+          } else if (props.limit == 20) {
+            props.onChange('limit', 50);
+          } else if (props.limit == 50) {
+            props.onChange('limit', 5);
+          }
+        }}>
+        <Ionicons name="ios-list" style={styles.actionButtonIcon} />
       </ActionButton.Item>
     </ActionButton>
   );
 };
+
+class RawModal extends Component {
+  render() {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Button title="OPEN BOTTOM SHEET" onPress={() => this.RBSheet.open()} />
+        <RBSheet
+          ref={ref => {
+            this.RBSheet = ref;
+          }}
+          height={300}
+          duration={250}
+          customStyles={{
+            container: {
+              justifyContent: 'center',
+              alignItems: 'center',
+            },
+          }}>
+          <Text>Testing modal</Text>
+        </RBSheet>
+      </View>
+    );
+  }
+}

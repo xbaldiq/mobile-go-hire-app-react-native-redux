@@ -24,24 +24,27 @@ export default class index extends Component {
         flexDirection="column"
         height="100%"
         style={{backgroundColor: 'grey'}}>
-        <View>
+        <View
+        style={{
+          flex:1
+        }}>
           <ImageBackground
             source={require('../../img/michael-afonso-Z_bTArFy6ks-unsplash.jpg')}
             style={{
               width: '100%',
-              height: 350,
+              height: '100%',
               resizeMode: 'cover',
             }}></ImageBackground>
         </View>
 
         <View
           style={{
-            height: 300,
+            flex:1,
             marginTop: -20,
             backgroundColor: 'white',
             borderRadius: 20,
             padding: 20,
-            justifyContent: 'space-between',
+            justifyContent: 'space-evenly',
           }}>
           {/* Content */}
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -88,7 +91,7 @@ export default class index extends Component {
           </View>
         </View>
 
-        <View style={{height: 200, padding: 20}}></View>
+        {/* <View style={{height: 200, padding: 20}}></View> */}
         {/* <Text>{`Ini profile-nya ${profile.name}`}</Text> */}
       </View>
     );
