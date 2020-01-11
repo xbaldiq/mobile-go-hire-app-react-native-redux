@@ -7,19 +7,11 @@ import successRateIcon from '../../img/iconSuccessRate.png';
 
 export default class Card extends Component {
   render() {
+
+    const { name, description, skill, total_project, successrate } = this.props
+
     return (
       <View style={{padding: 5, borderRadius: 20, fontFamily: 'Roboto'}}>
-        {/* <Image
-            source={require('../../img/michael-afonso-Z_bTArFy6ks-unsplash.jpg')}
-            style={{
-              flex: 1,
-              resizeMode: 'cover',
-              width: 150,
-              height: 100,
-              // alignSelf: 'stretch',
-              // width: null,
-            }}></Image> */}
-
         <ImageBackground
           imageStyle={{borderRadius: 20}}
           style={{
@@ -43,24 +35,29 @@ export default class Card extends Component {
               fontFamily: 'Roboto',
               padding: 5,
             }}>
+
+            {/* Name */}
             <Text style={{color: 'white', fontWeight: 'bold'}}>
-              Natalie Dormer
+            { name || 'Natalie Dormer'}
             </Text>
+
+            {/* Description */}
             <Text style={{color: 'white', fontStyle: 'italic'}}>
-              Fullstack Dev
+            { description === 'mohon diisi' ?  'Backend Dev' : description}
             </Text>
 
             {/* Total Project */}
             <View style={{flexDirection: 'row'}}>
               <Image source={totalProjectIcon} style={{marginRight: 5}} />
-              <Text style={{color: 'white', fontSize: 11}}>77 Project</Text>
+              <Text style={{color: 'white', fontSize: 11}}>{ `${total_project} Project` || '0 Project' }</Text>
             </View>
 
             {/* Success Rate*/}
             <View style={{flexDirection: 'row'}}>
               <Image source={successRateIcon} style={{marginRight: 5}} />
               <Text style={{color: 'white', fontSize: 11}}>
-                99% Success Rate
+              { `${successrate}% Success Rate` || '99% Success Rate' }
+                
               </Text>
             </View>
 
@@ -71,8 +68,8 @@ export default class Card extends Component {
                 borderColor: 'white',
                 marginVertical: 5,
               }}></View>
-            <Text style={{color: 'white', textAlign: 'center'}}>Flutter, React Native, Swift, Ionic</Text>
-          </View>
+            <Text style={{color: 'white', textAlign: 'center'}}> { skill || 'Flutter, React Native, Swift, Ionic' }</Text>
+          </View> 
         </ImageBackground>
       </View>
     );

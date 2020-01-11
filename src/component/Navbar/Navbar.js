@@ -43,7 +43,7 @@ export default class Navbar extends Component {
             source={require('../../img/logoArkademy.png')}
           />
           <TouchableOpacity onPress={logoutAccount}>
-            <OcticonsIcon name="sign-out" size={30} color="#4F8EF7" />
+            <OcticonsIcon name="sign-out" size={30} color="#000" />
           </TouchableOpacity>
         </View>
 

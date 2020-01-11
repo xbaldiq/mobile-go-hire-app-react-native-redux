@@ -1,6 +1,6 @@
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import {Home, Login, Register} from '../../pages';
+import {Home, Login, Register, Profile} from '../../pages';
 const Router = createStackNavigator(
   {
     Home: {
@@ -12,10 +12,13 @@ const Router = createStackNavigator(
     Register: {
       screen: Register,
     },
+    Profile: {
+      screen: Profile,
+    },
   },
   {
     headerMode: 'None',
-    initialRouteName: 'Register',
+    initialRouteName: 'Home',
   },
 );
 
