@@ -1,23 +1,52 @@
 import React, {Component} from 'react';
-import {View, Text, ImageBackground} from 'react-native';
+import {View, Text, ImageBackground, TouchableOpacity} from 'react-native';
 import HireIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Button} from 'react-native-elements';
-// import {Button} from 'native-base';
+import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {List, ListItem} from 'react-native-elements';
+// import { Container, Header, Content, Button, ListItem, Text, Icon, Left, Body, Right, Switch } from 'native-base';
+import {assignProject} from '../../axios/axios';
 
 export default class index extends Component {
   state = {
+    assignProjectList: [],
     profile: {},
+    modalVisible: false,
   };
 
   componentDidMount = () => {
     this.setState({profile: this.props.navigation.state.params.profile});
+    this.setState({
+      assignProjectList: this.props.navigation.state.params.assignProjectList,
+    });
+    this.setState({id_company: this.props.navigation.state.params.id_company});
+    this.setState({id_engineer: this.props.navigation.state.params.id});
+    this.setState({token: this.props.navigation.state.params.token});
+  };
+
+  listHiringProject = () => {
+    return (
+      <View>
+        {this.state.names.map((item, index) => (
+          <TouchableOpacity
+            key={item.id}
+            onPress={() => this.alertItemName(item)}>
+            <Text>{item.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
+  toggleModal = () => {
+    this.setState(
+      {modalVisible: !this.state.modalVisible}
+    );
   };
 
   render() {
     const {profile} = this.state;
-
-    const arraySkill = 'Javascript, Phyton, PHP'.split(', ');
 
     return (
       <View
@@ -25,9 +54,9 @@ export default class index extends Component {
         height="100%"
         style={{backgroundColor: 'grey'}}>
         <View
-        style={{
-          flex:1
-        }}>
+          style={{
+            flex: 1,
+          }}>
           <ImageBackground
             source={require('../../img/michael-afonso-Z_bTArFy6ks-unsplash.jpg')}
             style={{
@@ -39,7 +68,7 @@ export default class index extends Component {
 
         <View
           style={{
-            flex:1,
+            flex: 1,
             marginTop: -20,
             backgroundColor: 'white',
             borderRadius: 20,
@@ -57,8 +86,8 @@ export default class index extends Component {
               <Text style={{color: 'grey'}}>{profile.location}</Text>
             </View>
             {/* Button Hire */}
-
             <Button
+              onPress={() => this.toggleModal()}
               icon={
                 <HireIcon
                   name="account-plus"
@@ -88,6 +117,37 @@ export default class index extends Component {
             <Text style={{color: 'black'}}>
               {profile.skill || 'Typescript, Web Assembly'}
             </Text>
+          </View>
+
+          <View>
+            <Modal isVisible={this.state.modalVisible}>
+              <View style={{backgroundColor: 'white', borderRadius: 20}}>
+                <Text style={{textAlign: 'center'}}>Project to Assign</Text>
+                <View>
+                  {this.state.assignProjectList.map((item, index) => (
+                    <ListItem
+                      key={index}
+                      // leftAvatar={{source: {uri: item.avatar_url}}}
+                      title={item.project_name}
+                      // subtitle={item.subtitle}
+                      bottomDivider
+                      onPress={() => {
+                        assignProject(
+                          {
+                            id_engineer: this.state.id_engineer,
+                            id_company: this.state.id_company,
+                            name_project: item.project_name,
+                          },
+                          this.state.token,
+                        ).then(res => alert(`Success hiring`));
+                        this.toggleModal();
+                      }}
+                    />
+                  ))}
+                </View>
+                <Button title="Cancel Hire" onPress={this.toggleModal} />
+              </View>
+            </Modal>
           </View>
         </View>
 

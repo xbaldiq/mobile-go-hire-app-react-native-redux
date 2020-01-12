@@ -73,9 +73,9 @@ class Login extends Component {
 
   componentDidUpdate = async (prevState) => {
     // Trigger login button
-    if (await retrieveData('token')) {
-      this.props.navigation.navigate('Home');
-    }
+    // if (await retrieveData('token')) {
+    //   this.props.navigation.navigate('Home');
+    // }
   }
 
   state = {
@@ -84,7 +84,6 @@ class Login extends Component {
     user_type: 'engineer',
     username: '',
     password: '',
-    loggedIn: false
   };
 
   onClickSubmit = async () => {
@@ -100,12 +99,21 @@ class Login extends Component {
         storeData('token', res.value.data.data[0].token);
         storeData('userID', res.value.data.data[0].id);
         storeData('username', res.value.data.data[0].username);
+        storeData('name', res.value.data.data[0].name);
         storeData('user_type', res.value.data.data[0].user_type);
-        this.setState({loggedIn: !this.state.loggedIn})
+        this.setState({user_type: res.value.data.data[0].user_type}, this.redirectToHome)
+        ;
         // console.log(res.value.data.data[0]);
       })
       .catch(err => alert('error'));
   };
+
+  redirectToHome = () => {
+    if(this.state.user_type === 'company')
+    this.props.navigation.navigate('Home');
+    else
+    this.props.navigation.navigate('HomeEngineer');
+  }
 
   render() {
     const buttons = ['Engineer', 'Company'];

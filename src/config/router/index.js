@@ -1,10 +1,13 @@
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import {Home, Login, Register, Profile} from '../../pages';
+import {Home, HomeEngineer, Login, Register, Profile} from '../../pages';
 const Router = createStackNavigator(
   {
     Home: {
       screen: Home,
+    },
+    HomeEngineer: {
+      screen: HomeEngineer,
     },
     Login: {
       screen: Login,

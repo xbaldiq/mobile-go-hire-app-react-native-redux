@@ -18,6 +18,7 @@ import {SearchBar} from 'react-native-elements';
 import {Avatar} from 'react-native-paper';
 import axios from 'axios';
 import {getAllEngineer} from '../../Redux/Actions/Data/Engineer/';
+import {getListProject} from '../../axios/axios';
 // import Icon from 'react-native-vector-icons/Ionicons';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
@@ -35,6 +36,9 @@ class Home extends Component {
   }
 
   state = {
+
+    company_id: 0,
+
     page: 1,
     limit: 5,
     order: 'asc',
@@ -48,6 +52,7 @@ class Home extends Component {
     search: '',
     searchQuery: '',
     response: [],
+    projectList: [],
   };
 
   componentDidMount = async () => {
@@ -55,8 +60,18 @@ class Home extends Component {
     if (!(await retrieveData('token'))) {
       this.props.navigation.navigate('Login');
     } else {
+      // If have token engineer
+      this.setState({user_type: await retrieveData('user_type')}, ()=> {
+        if(this.state.user_type === 'engineer')
+        this.props.navigation.navigate('HomeEngineer');
+      })
+      this.setState({company_id: await retrieveData('userID')})
+      this.setState({username: await retrieveData('username')})
       this.setState({token: await retrieveData('token')}, () =>
         this.getAllEngineer(),
+      );
+      getListProject(this.state.token).then(res =>
+        this.setState({projectList: res}),
       );
     }
   };
@@ -79,7 +94,6 @@ class Home extends Component {
   };
 
   pagination = direction => {
-    // console.log(this.state.totalPages)
     if (direction === 'left') {
       if (this.state.page > 1)
         this.setState({page: this.state.page - 1}, () => {
@@ -160,6 +174,9 @@ class Home extends Component {
                     this.props.navigation.navigate('Profile', {
                       id: item.id,
                       profile: engineerList.response[index],
+                      assignProjectList: this.state.projectList,
+                      id_company: this.state.company_id,
+                      token: this.state.token
                     });
                   }}>
                   <Card

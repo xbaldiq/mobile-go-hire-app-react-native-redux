@@ -21,8 +21,13 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
 
 export default class Navbar extends Component {
+
+  // renderSearchBar = () => {
+  //   if()
+  // }
+
   render() {
-    const {search, searchQuery, updateSearch, logoutAccount} = this.props;
+    const {search, updateSearch, logoutAccount, userType} = this.props;
 
     console.log(this.props.search);
 
@@ -48,7 +53,7 @@ export default class Navbar extends Component {
         </View>
 
         {/* Search Bar */}
-        <View>
+        {userType !== 'engineer' ? <View>
           <SearchBar
             platform="default"
             lightTheme
@@ -61,7 +66,7 @@ export default class Navbar extends Component {
             containerStyle={{backgroundColor: 'white'}}
             inputContainerStyle={{backgroundColor: 'white'}}
           />
-        </View>
+        </View> : ''}
       </View>
     );
   }
