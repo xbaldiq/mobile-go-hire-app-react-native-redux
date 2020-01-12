@@ -4,18 +4,18 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  Text,
   StatusBar,
   Image,
   TouchableHighlight,
   TouchableOpacity,
   Button,
+  DrawerLayoutAndroid,
 } from 'react-native';
 
 import {Card} from '../../component';
 import {storeData, retrieveData} from '../../utils';
 import {SearchBar} from 'react-native-elements';
-import {Avatar} from 'react-native-paper';
+import {Avatar, Text} from 'react-native-paper';
 import axios from 'axios';
 import {getAllEngineer} from '../../Redux/Actions/Data/Engineer/';
 import {getListProject} from '../../axios/axios';
@@ -36,7 +36,6 @@ class Home extends Component {
   }
 
   state = {
-
     company_id: 0,
 
     page: 1,
@@ -61,18 +60,19 @@ class Home extends Component {
       this.props.navigation.navigate('Login');
     } else {
       // If have token engineer
-      this.setState({user_type: await retrieveData('user_type')}, ()=> {
-        if(this.state.user_type === 'engineer')
-        this.props.navigation.navigate('HomeEngineer');
-      })
-      this.setState({company_id: await retrieveData('userID')})
-      this.setState({username: await retrieveData('username')})
-      this.setState({token: await retrieveData('token')}, () =>
-        this.getAllEngineer(),
-      );
-      getListProject(this.state.token).then(res =>
-        this.setState({projectList: res}),
-      );
+      this.setState({user_type: await retrieveData('user_type')}, async () => {
+        if (this.state.user_type === 'engineer') {
+          this.props.navigation.navigate('HomeEngineer');
+        } else {
+          this.setState({token: await retrieveData('token')},this.getAllEngineer);
+          this.setState({company_id: await retrieveData('userID')});
+          this.setState({username: await retrieveData('username')});
+          this.setState({name: await retrieveData('name')});
+          getListProject(this.state.token).then(res =>
+            this.setState({projectList: res}),
+          );
+        }
+      });
     }
   };
 
@@ -141,89 +141,114 @@ class Home extends Component {
     this.setState({[key]: value}, this.getAllEngineer);
   };
 
+  openDrawer = () => {
+    this.drawer.openDrawer();
+  };
+
+  renderDrawer = () => {
+    return (
+      <View style={{flex: 1, backgroundColor: '#fff', paddingTop:20, alignItems:'center'}}>
+        <Avatar.Image
+          size={150}
+          source={{
+            uri:
+              'https://www.thewrap.com/wp-content/uploads/2019/11/The-Witcher.png',
+          }}
+        />
+      <Text style={{fontSize:25}}>{this.state.name}</Text>
+      </View>
+    );
+  };
+
   render() {
     const {engineerList} = this.props;
     const {search, searchQuery} = this.state;
 
     return (
-      // Root Container
-      <View
-        flexDirection="column"
-        // width="150%"
-        height="100%">
-        {/* App Bar */}
-        <Navbar
-          search={this.state.search}
-          updateSearch={this.updateSearch}
-          logoutAccount={this.logoutAccount}
-        />
-        <ScrollView>
+      <DrawerLayoutAndroid
+        drawerWidth={250}
+        drawerPosition={DrawerLayoutAndroid.positions.Left}
+        renderNavigationView={this.renderDrawer}
+        ref={_drawer => (this.drawer = _drawer)}>
+        <View
+          flexDirection="column"
+          // width="150%"
+          height="100%">
+          {/* App Bar */}
+          <Navbar
+            search={this.state.search}
+            updateSearch={this.updateSearch}
+            logoutAccount={this.logoutAccount}
+            openDrawer={this.openDrawer}
+          />
+          <ScrollView>
+            <View
+              style={{
+                flex: 1,
+                flexDirection: 'row',
+                flexWrap: 'wrap',
+                justifyContent: 'center',
+              }}>
+              {this.state.response.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    key={item.id}
+                    onPress={() => {
+                      console.log(JSON.stringify(engineerList.response[index]));
+                      this.props.navigation.navigate('Profile', {
+                        id: item.id,
+                        profile: engineerList.response[index],
+                        assignProjectList: this.state.projectList,
+                        id_company: this.state.company_id,
+                        token: this.state.token,
+                      });
+                    }}>
+                    <Card
+                      key={item.id}
+                      name={item.name}
+                      skill={item.skill}
+                      description={item.description}
+                      total_project={item.total_project || '0'}
+                      successrate={item.successrate || '0'}
+                    />
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </ScrollView>
           <View
             style={{
-              flex: 1,
+              alignItems: 'center',
               flexDirection: 'row',
-              flexWrap: 'wrap',
-              justifyContent: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 15,
+              height: 45,
+              backgroundColor: 'gray',
             }}>
-            {this.state.response.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  key={item.id}
-                  onPress={() => {
-                    console.log(JSON.stringify(engineerList.response[index]));
-                    this.props.navigation.navigate('Profile', {
-                      id: item.id,
-                      profile: engineerList.response[index],
-                      assignProjectList: this.state.projectList,
-                      id_company: this.state.company_id,
-                      token: this.state.token
-                    });
-                  }}>
-                  <Card
-                    key={item.id}
-                    name={item.name}
-                    skill={item.skill}
-                    description={item.description}
-                    total_project={item.total_project || '0'}
-                    successrate={item.successrate || '0'}
-                  />
-                </TouchableOpacity>
-              );
-            })}
+            <TouchableOpacity onPress={() => this.pagination('left')}>
+              <Ionicons name="ios-arrow-dropleft" size={40} color="white" />
+            </TouchableOpacity>
+
+            {/* <RawModal /> */}
+
+            <TouchableOpacity onPress={() => this.pagination('right')}>
+              <Ionicons name="ios-arrow-dropright" size={40} color="white" />
+            </TouchableOpacity>
           </View>
-        </ScrollView>
-        <View
-          style={{
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            paddingHorizontal: 15,
-            height: 45,
-            backgroundColor: 'gray',
-          }}>
-          <TouchableOpacity onPress={() => this.pagination('left')}>
-            <Ionicons name="ios-arrow-dropleft" size={40} color="white" />
-          </TouchableOpacity>
-
-          {/* <RawModal /> */}
-
-          <TouchableOpacity onPress={() => this.pagination('right')}>
-            <Ionicons name="ios-arrow-dropright" size={40} color="white" />
-          </TouchableOpacity>
-        </View>
-        {/* <ActionButton
+          {/* <ActionButton
           buttonColor="rgba(231,76,60,1)"
           onPress={() => {
             console.log('hi');
           }}
         /> */}
-        <FloatingButton
-          order={this.state.order}
-          search_by={this.state.search_by}
-          limit={this.state.limit}
-          onChange={this.onChange}
-        />
-      </View>
+          <FloatingButton
+            order={this.state.order}
+            search_by={this.state.search_by}
+            limit={this.state.limit}
+            onChange={this.onChange}
+          />
+        </View>
+      </DrawerLayoutAndroid>
     );
   }
 }

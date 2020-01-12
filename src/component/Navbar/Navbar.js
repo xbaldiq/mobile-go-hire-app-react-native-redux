@@ -17,32 +17,46 @@ import {Avatar} from 'react-native-paper';
 import axios from 'axios';
 import {getAllEngineer} from '../../Redux/Actions/Data/Engineer/';
 // import Icon from 'react-native-vector-icons/Ionicons';
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
+// import { Avatar } from 'react-native-elements';
 
 export default class Navbar extends Component {
 
-  // renderSearchBar = () => {
-  //   if()
-  // }
-
   render() {
-    const {search, updateSearch, logoutAccount, userType} = this.props;
-
+    const {search, updateSearch, logoutAccount, userType, openDrawer} = this.props;
     console.log(this.props.search);
 
     return (
       <View>
         {/* App Bar */}
+
         <View
           flexDirection="row"
           style={{
             backgroundColor: 'white',
-            padding: 10,
+            padding: 5,
             height: 70,
             justifyContent: 'space-around',
             alignItems: 'center',
           }}>
+          <TouchableOpacity onPress={openDrawer}>
+            <Avatar.Image
+              size={40}
+              source={{
+                uri:
+                  'https://www.thewrap.com/wp-content/uploads/2019/11/The-Witcher.png',
+              }}
+            />
+          </TouchableOpacity>
+          {/* <TouchableOpacity>
+            <MaterialCommunityIcons
+              name="account-circle"
+              size={35}
+              color="#000"
+            />
+          </TouchableOpacity> */}
+
           <Image
             style={{width: 150, height: 100}}
             source={require('../../img/logoArkademy.png')}
@@ -53,20 +67,24 @@ export default class Navbar extends Component {
         </View>
 
         {/* Search Bar */}
-        {userType !== 'engineer' ? <View>
-          <SearchBar
-            platform="default"
-            lightTheme
-            placeholder="Type Here..."
-            onChangeText={updateSearch}
-            value={search}
-            round
-            clearIcon
-            searchIcon
-            containerStyle={{backgroundColor: 'white'}}
-            inputContainerStyle={{backgroundColor: 'white'}}
-          />
-        </View> : ''}
+        {userType !== 'engineer' ? (
+          <View>
+            <SearchBar
+              platform="default"
+              lightTheme
+              placeholder="Search Here..."
+              onChangeText={updateSearch}
+              value={search}
+              round
+              clearIcon
+              searchIcon
+              containerStyle={{backgroundColor: 'white'}}
+              inputContainerStyle={{backgroundColor: 'white'}}
+            />
+          </View>
+        ) : (
+          <Text></Text>
+        )}
       </View>
     );
   }

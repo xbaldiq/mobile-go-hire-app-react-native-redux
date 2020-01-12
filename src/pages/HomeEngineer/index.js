@@ -8,6 +8,7 @@ import {
   Image,
   TouchableHighlight,
   TouchableOpacity,
+  DrawerLayoutAndroid,
 } from 'react-native';
 import {storeData, retrieveData} from '../../utils';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -16,6 +17,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {connect} from 'react-redux';
 import {Navbar} from '../../component/';
 import {Card} from '../../component';
+import {Avatar} from 'react-native-paper';
 import {
   Container,
   Header,
@@ -33,10 +35,17 @@ import {getProjectList} from '../../Redux/Actions/Data/Engineer/engineerProjectL
 import {responseProject} from '../../Redux/Actions/Data/Engineer/responseProject';
 
 class HomeEngineer extends Component {
+
+  state = {
+    userType: 'engineer'
+  }
+
   componentDidMount = async () => {
     this.setState({engineer_id: await retrieveData('userID')});
     this.setState({username: await retrieveData('username')});
+    this.setState({userType: await retrieveData('user_type')});
     this.setState({token: await retrieveData('token')});
+    this.setState({name: await retrieveData('name')});
     await this.props.dispatch(getProjectList(this.state.engineer_id));
   };
 
@@ -63,13 +72,35 @@ class HomeEngineer extends Component {
     await this.props.dispatch(getProjectList(this.state.engineer_id));
   };
 
+  openDrawer = () => {
+    this.drawer.openDrawer();
+  };
+
+  renderDrawer = () => {
+    return (
+      <View style={{flex: 1, backgroundColor: '#fff', paddingTop:20, alignItems:'center'}}>
+        <Avatar.Image
+          size={150}
+          source={{
+            uri:
+              'https://www.thewrap.com/wp-content/uploads/2019/11/The-Witcher.png',
+          }}
+        />
+      <Text style={{fontSize:25}}>{this.state.name}</Text>
+      </View>
+    );
+  };
+
   render() {
     const engineerProjectList = this.props.engineerProjectList;
-    // console.log(engineerProjectList.engineerProjectList);
-
     return (
+      <DrawerLayoutAndroid
+      drawerWidth={250}
+      drawerPosition={DrawerLayoutAndroid.positions.Left}
+      renderNavigationView={this.renderDrawer}
+      ref={_drawer => (this.drawer = _drawer)}>
       <View>
-        <Navbar logoutAccount={this.logoutAccount} />
+        <Navbar logoutAccount={this.logoutAccount} userType={this.state.userType} openDrawer={this.openDrawer} />
         {/* <Text>Hello from engineer</Text> */}
         <List>
           {engineerProjectList.engineerProjectList.map((project, index) => (
@@ -156,6 +187,7 @@ class HomeEngineer extends Component {
           ))}
         </List>
       </View>
+      </DrawerLayoutAndroid>
     );
   }
 }
