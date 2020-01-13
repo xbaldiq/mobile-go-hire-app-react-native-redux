@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, Image, TouchableOpacity, View} from 'react-native';
 import {Button, ButtonGroup, Input, ThemeProvider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 import {registerAccount} from '../../Redux/Actions/Authorization';
@@ -8,6 +8,7 @@ import {storeData, retrieveData} from '../../utils';
 import {connect} from 'react-redux';
 import Axios from 'axios';
 import {API_URL} from 'react-native-dotenv';
+import logoGoHire from '../../img/gohirelogo.png'
 
 const styles = StyleSheet.create({
   container: {
@@ -16,6 +17,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     // alignContent: 'center',
+    paddingTop: 30,
     flex: 1,
   },
   logo: {
@@ -101,10 +103,11 @@ class Register extends Component {
       <ThemeProvider>
         <View style={styles.container}>
           {/* Logo screen */}
-          <LinearGradient colors={['#000000', '#311eaf']} style={styles.logo}>
-            <Text h1 style={{color: 'white'}}>
-              Please Register
-            </Text>
+          <LinearGradient colors={['#FFF', '#FFF']} style={styles.logo}>
+          <Image
+            style={{paddingTop:30, width: 200}}
+            source={require('../../img/logoHire1.png')}
+          />
           </LinearGradient>
 
           {/* Form */}

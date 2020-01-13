@@ -1,12 +1,19 @@
 import React, {Component} from 'react';
-import {View, Text, ImageBackground, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  ImageBackground,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import HireIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Button} from 'react-native-elements';
 import Modal from 'react-native-modal';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {List, ListItem} from 'react-native-elements';
 // import { Container, Header, Content, Button, ListItem, Text, Icon, Left, Body, Right, Switch } from 'native-base';
 import {assignProject} from '../../axios/axios';
+import totalProjectIcon from '../../img/iconProject.png';
+import successRateIcon from '../../img/iconSuccessRate.png';
 
 export default class index extends Component {
   state = {
@@ -23,6 +30,12 @@ export default class index extends Component {
     this.setState({id_company: this.props.navigation.state.params.id_company});
     this.setState({id_engineer: this.props.navigation.state.params.id});
     this.setState({token: this.props.navigation.state.params.token});
+    this.setState({
+      total_project: this.props.navigation.state.params.total_project,
+    });
+    this.setState({
+      successrate: this.props.navigation.state.params.successrate,
+    });
   };
 
   listHiringProject = () => {
@@ -40,13 +53,13 @@ export default class index extends Component {
   };
 
   toggleModal = () => {
-    this.setState(
-      {modalVisible: !this.state.modalVisible}
-    );
+    this.setState({modalVisible: !this.state.modalVisible});
   };
 
   render() {
     const {profile} = this.state;
+
+    // console.log(this.state.profile)
 
     return (
       <View
@@ -55,7 +68,7 @@ export default class index extends Component {
         style={{backgroundColor: 'grey'}}>
         <View
           style={{
-            flex: 1,
+            flex: 3,
           }}>
           <ImageBackground
             source={require('../../img/michael-afonso-Z_bTArFy6ks-unsplash.jpg')}
@@ -63,17 +76,53 @@ export default class index extends Component {
               width: '100%',
               height: '100%',
               resizeMode: 'cover',
-            }}></ImageBackground>
+              justifyContent: 'flex-end',
+            }}>
+            <View
+              style={{
+                borderRadius: 20,
+                justifyContent: 'flex-end',
+                alignItems: 'center',
+                width: '100%',
+                height: 'auto',
+                backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                fontFamily: 'Roboto',
+                paddingBottom: 35,
+                paddingTop: 18,
+              }}>
+              <View style={{flexDirection: 'row', justifyContent:'space-between'}}>
+                <View style={{flexDirection: 'row', alignItems: 'center', paddingRight: 20}}>
+                  <Image source={totalProjectIcon} style={{marginRight: 5}} />
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                    }}>{`Total Project: ${this.state.total_project}`}</Text>
+                </View>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <Image source={successRateIcon} style={{marginRight: 5}} />
+                  <Text
+                    style={{
+                      color: 'white',
+                      fontWeight: 'bold',
+                    }}>{`Total Project: ${this.state.total_project}`}</Text>
+                </View>
+              </View>
+              {/* <Text style={{color: 'white', fontWeight: 'bold'}}></Text>
+              <Text style={{color: 'white', fontWeight: 'bold'}}></Text>
+              <Text style={{color: 'white', fontWeight: 'bold'}}></Text> */}
+            </View>
+          </ImageBackground>
         </View>
 
         <View
           style={{
-            flex: 1,
+            flex: 3,
             marginTop: -20,
             backgroundColor: 'white',
             borderRadius: 20,
             padding: 20,
-            justifyContent: 'space-evenly',
+            justifyContent: 'flex-start',
           }}>
           {/* Content */}
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -105,12 +154,20 @@ export default class index extends Component {
           </View>
 
           <View>
-            <Text style={{fontSize: 20, fontWeight: 'bold'}}>About</Text>
+            <Text style={{paddingTop: 20, fontSize: 20, fontWeight: 'bold'}}>
+              About
+            </Text>
             <Text style={{color: 'grey'}}>{profile.about}</Text>
           </View>
 
           <View>
-            <Text style={{fontSize: 20, fontWeight: 'bold', color: 'black'}}>
+            <Text
+              style={{
+                paddingTop: 20,
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: 'black',
+              }}>
               Skill
             </Text>
 
@@ -145,7 +202,7 @@ export default class index extends Component {
                     />
                   ))}
                 </View>
-                <Button title="Cancel Hire" onPress={this.toggleModal} />
+                <Button title="Cancel Hire" onPress={this.toggleModal} style={{borderRadius:'50%'}}/>
               </View>
             </Modal>
           </View>

@@ -15,7 +15,7 @@ import {
 import {Card} from '../../component';
 import {storeData, retrieveData} from '../../utils';
 import {SearchBar} from 'react-native-elements';
-import {Avatar, Text} from 'react-native-paper';
+import {Avatar, Text, Divider, TextInput} from 'react-native-paper';
 import axios from 'axios';
 import {getAllEngineer} from '../../Redux/Actions/Data/Engineer/';
 import {getListProject} from '../../axios/axios';
@@ -29,6 +29,20 @@ import ActionButton from 'react-native-action-button';
 import {connect} from 'react-redux';
 import {Navbar} from '../../component/';
 import RBSheet from 'react-native-raw-bottom-sheet';
+import {getAssignedProject} from '../../Redux/Actions/Data/Company/getAssignedProject';
+import { createNewProject } from '../../Redux/Actions/Data/Company/createNewProject';
+import Modal from 'react-native-modal';
+import {
+  Container,
+  Header,
+  Content,
+  ListItem,
+  Icon,
+  Left,
+  Body,
+  Right,
+  Switch,
+} from 'native-base';
 
 class Home extends Component {
   constructor() {
@@ -45,6 +59,7 @@ class Home extends Component {
     sort_by: 'name',
     totalPages: 0,
     total_data: 0,
+    modalVisible: false,
 
     loggedIn: true,
     token: '',
@@ -64,13 +79,17 @@ class Home extends Component {
         if (this.state.user_type === 'engineer') {
           this.props.navigation.navigate('HomeEngineer');
         } else {
-          this.setState({token: await retrieveData('token')},this.getAllEngineer);
+          this.setState(
+            {token: await retrieveData('token')},
+            this.getAllEngineer,
+          );
           this.setState({company_id: await retrieveData('userID')});
           this.setState({username: await retrieveData('username')});
           this.setState({name: await retrieveData('name')});
           getListProject(this.state.token).then(res =>
             this.setState({projectList: res}),
           );
+          await this.props.dispatch(getAssignedProject(this.state.token));
         }
       });
     }
@@ -145,17 +164,62 @@ class Home extends Component {
     this.drawer.openDrawer();
   };
 
+  toggleModal = () => {
+    this.setState({modalVisible: !this.state.modalVisible});
+  };
+
   renderDrawer = () => {
     return (
-      <View style={{flex: 1, backgroundColor: '#fff', paddingTop:20, alignItems:'center'}}>
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: '#fff',
+          paddingTop: 20,
+          alignItems: 'center',
+        }}>
         <Avatar.Image
           size={150}
           source={{
             uri:
-              'https://www.thewrap.com/wp-content/uploads/2019/11/The-Witcher.png',
+              'https://cdn0-production-images-kly.akamaized.net/Ldc2_jBrkfU2sl2FzHnJRtpgHP8=/640x640/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/1060616/original/077298200_1447924136-logo_telegram.png',
           }}
         />
-      <Text style={{fontSize:25}}>{this.state.name}</Text>
+        <Text style={{fontSize: 25, paddingTop: 13}}>{this.state.name}</Text>
+        {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <Ionicons name="ios-arrow-dropright" size={30} color="black" />
+          <Text style={{fontSize: 13}}>Assigned Project</Text>
+        </View> */}
+        <ListItem icon>
+          <Right>
+            <Text>Profile</Text>
+            <Icon active name="arrow-forward" />
+          </Right>
+        </ListItem>
+        {/* <TouchableOpacity > */}
+        <ListItem
+          icon
+          onPress={() => {
+            this.props.navigation.navigate('ProjectPage');
+            this.drawer.closeDrawer();
+          }}>
+          <Right>
+            <Text>Assigned Project</Text>
+            <Icon active name="arrow-forward" />
+          </Right>
+        </ListItem>
+        <ListItem
+          icon
+          onPress={() => {
+            // this.props.navigation.navigate('ProjectPage');
+            this.toggleModal();
+            this.drawer.closeDrawer();
+          }}>
+          <Right>
+            <Text>Add Project</Text>
+            <Icon active name="arrow-forward" />
+          </Right>
+        </ListItem>
+        {/* </TouchableOpacity> */}
       </View>
     );
   };
@@ -198,6 +262,8 @@ class Home extends Component {
                       this.props.navigation.navigate('Profile', {
                         id: item.id,
                         profile: engineerList.response[index],
+                        total_project: item.total_project || '0',
+                        successrate: item.successrate || '0',
                         assignProjectList: this.state.projectList,
                         id_company: this.state.company_id,
                         token: this.state.token,
@@ -247,6 +313,29 @@ class Home extends Component {
             limit={this.state.limit}
             onChange={this.onChange}
           />
+          <View>
+            <Modal isVisible={this.state.modalVisible}>
+              <View style={{backgroundColor: 'white', borderRadius: 10}}>
+                <Text style={{textAlign: 'center'}}>Project to Assign</Text>
+                <TextInput
+                  // label="Email"
+                  value={this.state.text}
+                  onChangeText={addProject => this.setState({addProject})}
+                />
+                <Button
+                  title="Add"
+                  onPress={ async () => {
+                    await this.props.dispatch(createNewProject(this.state.addProject,this.state.token)).then((res) => {
+                      alert('Create project success')
+                      this.setState({addProject:''})
+                    });
+                    this.toggleModal;
+                  }}
+                />
+                <Button title="Cancel" onPress={this.toggleModal} />
+              </View>
+            </Modal>
+          </View>
         </View>
       </DrawerLayoutAndroid>
     );

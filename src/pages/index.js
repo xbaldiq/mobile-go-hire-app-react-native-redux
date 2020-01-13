@@ -1,4 +1,5 @@
 import Home from './Home'
+import ProjectPage from './Home/ProjectPage'
 import HomeEngineer from './HomeEngineer'
 import Login from './Login';
 import Register from './Register'
@@ -9,5 +10,6 @@ export {
     HomeEngineer,
     Login,
     Register,
-    Profile
+    Profile,
+    ProjectPage
 }

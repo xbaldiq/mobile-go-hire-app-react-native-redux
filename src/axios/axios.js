@@ -3,7 +3,7 @@ import {API_URL} from 'react-native-dotenv';
 
 export const getListProject = (token) => {
     return axios
-      .get(API_URL.concat('/company/project'), {
+      .get('http://192.168.6.104:8000'.concat('/company/project'), {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer `.concat(token)
@@ -20,7 +20,7 @@ export const getListProject = (token) => {
 
     console.log('data',data)
     return axios
-      .post(API_URL.concat('/company/project/assign'), data,{
+      .post('http://192.168.6.104:8000'.concat('/company/project/assign'), data,{
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer `.concat(token)

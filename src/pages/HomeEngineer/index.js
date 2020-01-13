@@ -18,6 +18,7 @@ import {connect} from 'react-redux';
 import {Navbar} from '../../component/';
 import {Card} from '../../component';
 import {Avatar} from 'react-native-paper';
+import { getEngineerProfile } from '../../Redux/Actions/Data/Engineer/engineerProfile';
 import {
   Container,
   Header,
@@ -27,6 +28,7 @@ import {
   Thumbnail,
   Text,
   Left,
+  Icon,
   Body,
   Right,
   Button,
@@ -41,12 +43,14 @@ class HomeEngineer extends Component {
   }
 
   componentDidMount = async () => {
+
     this.setState({engineer_id: await retrieveData('userID')});
     this.setState({username: await retrieveData('username')});
     this.setState({userType: await retrieveData('user_type')});
     this.setState({token: await retrieveData('token')});
     this.setState({name: await retrieveData('name')});
     await this.props.dispatch(getProjectList(this.state.engineer_id));
+    await this.props.dispatch(getEngineerProfile(this.state.token));
   };
 
   logoutAccount = async () => {
@@ -83,10 +87,32 @@ class HomeEngineer extends Component {
           size={150}
           source={{
             uri:
-              'https://www.thewrap.com/wp-content/uploads/2019/11/The-Witcher.png',
+              'https://cdn0-production-images-kly.akamaized.net/Ldc2_jBrkfU2sl2FzHnJRtpgHP8=/640x640/smart/filters:quality(75):strip_icc():format(jpeg)/kly-media-production/medias/1060616/original/077298200_1447924136-logo_telegram.png',
           }}
         />
-      <Text style={{fontSize:25}}>{this.state.name}</Text>
+      <Text style={{fontSize:25, paddingTop: 13}}>{this.state.name}</Text>
+          <ListItem icon
+                    onPress={() => {
+                      // this.props.navigation.navigate('ProjectPage');
+                      this.props.navigation.navigate('Profile', {})
+                      this.drawer.closeDrawer();
+                    }}>
+            <Right>
+              <Text>Profile</Text>
+              <Icon active name="arrow-forward" />
+            </Right>
+          </ListItem>
+        <ListItem
+          icon
+          onPress={() => {
+            // this.props.navigation.navigate('ProjectPage');
+            this.drawer.closeDrawer();
+          }}>
+          <Right>
+            <Text>Assigned Project</Text>
+            <Icon active name="arrow-forward" />
+          </Right>
+        </ListItem>
       </View>
     );
   };
@@ -195,6 +221,7 @@ class HomeEngineer extends Component {
 const mapStateToProps = state => {
   return {
     engineerProjectList: state.engineerProjectList,
+    engineerProfile: state.engineerProfile
   };
 };
 

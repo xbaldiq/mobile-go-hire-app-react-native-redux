@@ -1,14 +1,10 @@
 import { combineReducers } from "redux";
-// import engineerProjectList from "./Engineer/Project/engineerProjectList";
-// import engineerProfile from "./Engineer/Profile/engineerProfile";
-// import engineerSkill from "./Engineer/Profile/engineerSkill";
-// import assignedProject from "./Company/Project/engineerProjectList";
-// import companyProfile from "./Company/Profile/companyProfile";
-// import engineerList from "./Company/Data/engineerList";
 
+import assignedProject from "./Data/Company/assignedProjectList";
 import loginReducer from './Login/login'
 import RegisterReducer from './Login/register'
 import engineerList from './Data/Engineer/getAllEngineer'
+import engineerProfile from "./Data/Engineer/engineerProfile";
 import engineerProjectList from './Data/Engineer/Project/engineerProjectList'
 
 const reducers = combineReducers({
@@ -16,6 +12,8 @@ const reducers = combineReducers({
   RegisterReducer,
   engineerList,
   engineerProjectList,
+  assignedProject,
+  engineerProfile
 });
 
 export default reducers;

@@ -21,6 +21,7 @@ import {connect} from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import {storeData, retrieveData} from '../../utils';
 import {loginAccount} from '../../Redux/Actions/Authorization';
+import logoGoHire from '../../img/gohirelogo.png'
 
 const styles = StyleSheet.create({
   container: {
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     // alignContent: 'center',
+    paddingTop: 30,
     flex: 1,
   },
   scrollView: {
@@ -122,10 +124,15 @@ class Login extends Component {
       <ThemeProvider>
         <View style={styles.container}>
           {/* Logo screen */}
-          <LinearGradient colors={['#95008f', '#000000']} style={styles.logo}>
-            <Text h1 style={{color: 'white'}}>
-              Please Login
-            </Text>
+          <LinearGradient colors={['#FFF', '#FFF']} style={styles.logo}>
+          {/* <LinearGradient colors={['#FFF', '#000000']} style={styles.logo}> */}
+            {/* <Text h1 style={{color: 'white', fontSize: 20}}>
+             Go Hire App
+            </Text> */}
+            <Image
+            style={{paddingTop:30, width: 200}}
+            source={require('../../img/logoHire1.png')}
+          />
           </LinearGradient>
 
           {/* Form */}
