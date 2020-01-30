@@ -1,17 +1,9 @@
-import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  ImageBackground,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import HireIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Button} from 'react-native-elements';
+import React, { Component } from 'react';
+import { Image, ImageBackground, Text, TouchableOpacity, View } from 'react-native';
+import { Button, ListItem } from 'react-native-elements';
 import Modal from 'react-native-modal';
-import {List, ListItem} from 'react-native-elements';
-// import { Container, Header, Content, Button, ListItem, Text, Icon, Left, Body, Right, Switch } from 'native-base';
-import {assignProject} from '../../axios/axios';
+import HireIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { assignProject } from '../../axios/axios';
 import totalProjectIcon from '../../img/iconProject.png';
 import successRateIcon from '../../img/iconSuccessRate.png';
 
@@ -105,7 +97,7 @@ export default class index extends Component {
                     style={{
                       color: 'white',
                       fontWeight: 'bold',
-                    }}>{`Total Project: ${this.state.total_project}`}</Text>
+                    }}>{`Success Rate: ${this.state.successrate}%`}</Text>
                 </View>
               </View>
               {/* <Text style={{color: 'white', fontWeight: 'bold'}}></Text>

@@ -1,27 +1,10 @@
 import React, {Component} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Image,
-  Text,
-  StatusBar,
-  ImageBackground,
-  TouchableOpacity,
-  Picker,
-} from 'react-native';
-import axios from 'axios';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Input, ThemeProvider, Button, ButtonGroup} from 'react-native-elements';
-import img1 from '../../img/loginPict1.svg';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Button, ButtonGroup, Input, ThemeProvider} from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
-import {API_URL} from 'react-native-dotenv';
 import {connect} from 'react-redux';
-import AsyncStorage from '@react-native-community/async-storage';
-import {storeData, retrieveData} from '../../utils';
 import {loginAccount} from '../../Redux/Actions/Authorization';
-import logoGoHire from '../../img/gohirelogo.png'
+import {retrieveData, storeData} from '../../utils';
 
 const styles = StyleSheet.create({
   container: {
@@ -29,7 +12,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    // alignContent: 'center',
     paddingTop: 30,
     flex: 1,
   },
@@ -66,19 +48,11 @@ const styles = StyleSheet.create({
 });
 
 class Login extends Component {
-
   componentDidMount = async () => {
     if (await retrieveData('token')) {
       this.props.navigation.navigate('Home');
     }
-  }
-
-  componentDidUpdate = async (prevState) => {
-    // Trigger login button
-    // if (await retrieveData('token')) {
-    //   this.props.navigation.navigate('Home');
-    // }
-  }
+  };
 
   state = {
     role: 'company',
@@ -103,19 +77,19 @@ class Login extends Component {
         storeData('username', res.value.data.data[0].username);
         storeData('name', res.value.data.data[0].name);
         storeData('user_type', res.value.data.data[0].user_type);
-        this.setState({user_type: res.value.data.data[0].user_type}, this.redirectToHome)
-        ;
-        // console.log(res.value.data.data[0]);
+        this.setState(
+          {user_type: res.value.data.data[0].user_type},
+          this.redirectToHome,
+        );
       })
       .catch(err => alert('error'));
   };
 
   redirectToHome = () => {
-    if(this.state.user_type === 'company')
-    this.props.navigation.navigate('Home');
-    else
-    this.props.navigation.navigate('HomeEngineer');
-  }
+    if (this.state.user_type === 'company')
+      this.props.navigation.navigate('Home');
+    else this.props.navigation.navigate('HomeEngineer');
+  };
 
   render() {
     const buttons = ['Engineer', 'Company'];
@@ -123,16 +97,13 @@ class Login extends Component {
     return (
       <ThemeProvider>
         <View style={styles.container}>
+          
           {/* Logo screen */}
           <LinearGradient colors={['#FFF', '#FFF']} style={styles.logo}>
-          {/* <LinearGradient colors={['#FFF', '#000000']} style={styles.logo}> */}
-            {/* <Text h1 style={{color: 'white', fontSize: 20}}>
-             Go Hire App
-            </Text> */}
             <Image
-            style={{paddingTop:30, width: 200}}
-            source={require('../../img/logoHire1.png')}
-          />
+              style={{paddingTop: 30, width: 200}}
+              source={require('../../img/logoHire1.png')}
+            />
           </LinearGradient>
 
           {/* Form */}
@@ -167,7 +138,6 @@ class Login extends Component {
               }}
               selectedIndex={this.state.selectedIndex}
               buttons={buttons}
-              // style={{}}
               containerStyle={{height: 40, width: 350, marginTop: 20}}
             />
 
@@ -181,8 +151,7 @@ class Login extends Component {
                   buttonStyle={{width: 350}}
                   onPress={e => {
                     this.onClickSubmit(e);
-                    // alert('login!');
-                    // this.props.navigation.navigate('Home');
+                    // tambahkan snackbar login
                   }}
                 />
               </TouchableOpacity>
@@ -193,7 +162,6 @@ class Login extends Component {
           <View style={styles.registerButton}>
             <TouchableOpacity
               onPress={() => {
-                // alert('Register!');
                 this.props.navigation.navigate('Register');
               }}>
               <Text>Dont have an account? Sign Up here.</Text>

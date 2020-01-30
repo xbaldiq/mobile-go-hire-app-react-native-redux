@@ -1,25 +1,8 @@
-import React, {Component} from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-
-import {Card} from '../../component';
-import {storeData, retrieveData} from '../../utils';
-import {SearchBar} from 'react-native-elements';
-import {Avatar} from 'react-native-paper';
-import axios from 'axios';
-import {getAllEngineer} from '../../Redux/Actions/Data/Engineer/';
-// import Icon from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import React, { Component } from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { SearchBar } from 'react-native-elements';
+import { Avatar } from 'react-native-paper';
 import OcticonsIcon from 'react-native-vector-icons/Octicons';
-// import { Avatar } from 'react-native-elements';
 
 export default class Navbar extends Component {
 
@@ -30,33 +13,27 @@ export default class Navbar extends Component {
     return (
       <View>
         {/* App Bar */}
-
         <View
           flexDirection="row"
           style={{
             backgroundColor: 'white',
             padding: 5,
-            height: 70,
+            height: 60,
             justifyContent: 'space-around',
             alignItems: 'center',
+            borderBottomWidth: 3,
+            borderBottomColor: '#9AD0FF'
+
           }}>
           <TouchableOpacity onPress={openDrawer}>
             <Avatar.Image
-              size={40}
+              size={50}
               source={{
                 uri:
                   'https://www.thewrap.com/wp-content/uploads/2019/11/The-Witcher.png',
               }}
             />
           </TouchableOpacity>
-          {/* <TouchableOpacity>
-            <MaterialCommunityIcons
-              name="account-circle"
-              size={35}
-              color="#000"
-            />
-          </TouchableOpacity> */}
-
           <Image
             style={{width: 150, height: 100}}
             source={require('../../img/logoHire2.png')}

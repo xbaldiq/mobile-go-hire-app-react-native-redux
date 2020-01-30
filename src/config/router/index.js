@@ -1,8 +1,15 @@
 import React from 'react';
-import { View } from 'react-native';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
-import { Home, HomeEngineer, Login, Profile, Register, ProjectPage } from '../../pages';
+import {View} from 'react-native';
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
+import {
+  Home,
+  HomeEngineer,
+  Login,
+  Profile,
+  Register,
+  ProjectPage,
+} from '../../pages';
 
 const Router = createStackNavigator(
   {
@@ -24,7 +31,6 @@ const Router = createStackNavigator(
     ProjectPage: {
       screen: ProjectPage,
     },
-
   },
   {
     headerMode: 'None',
@@ -37,20 +43,20 @@ export const welcomeScreen = () => {
     <View>
       <Text>Ini welcomescreen</Text>
     </View>
-  )
-}
+  );
+};
 
 export const dashboard = () => {
   return (
     <View>
       <Text>Ini dashboard</Text>
     </View>
-  )
-}
+  );
+};
 
 const AppSwitchNavigator = createSwitchNavigator({
   welcome: {screen: welcomeScreen},
   dashboard: {screen: dashboard},
-})
+});
 
 export default createAppContainer(Router);

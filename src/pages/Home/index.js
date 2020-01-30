@@ -185,17 +185,12 @@ class Home extends Component {
           }}
         />
         <Text style={{fontSize: 25, paddingTop: 13}}>{this.state.name}</Text>
-        {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Ionicons name="ios-arrow-dropright" size={30} color="black" />
-          <Text style={{fontSize: 13}}>Assigned Project</Text>
-        </View> */}
         <ListItem icon>
           <Right>
             <Text>Profile</Text>
             <Icon active name="arrow-forward" />
           </Right>
         </ListItem>
-        {/* <TouchableOpacity > */}
         <ListItem
           icon
           onPress={() => {
@@ -210,7 +205,6 @@ class Home extends Component {
         <ListItem
           icon
           onPress={() => {
-            // this.props.navigation.navigate('ProjectPage');
             this.toggleModal();
             this.drawer.closeDrawer();
           }}>
@@ -219,7 +213,6 @@ class Home extends Component {
             <Icon active name="arrow-forward" />
           </Right>
         </ListItem>
-        {/* </TouchableOpacity> */}
       </View>
     );
   };
@@ -282,7 +275,7 @@ class Home extends Component {
               })}
             </View>
           </ScrollView>
-          <View
+          {/* <View
             style={{
               alignItems: 'center',
               flexDirection: 'row',
@@ -295,18 +288,10 @@ class Home extends Component {
               <Ionicons name="ios-arrow-dropleft" size={40} color="white" />
             </TouchableOpacity>
 
-            {/* <RawModal /> */}
-
             <TouchableOpacity onPress={() => this.pagination('right')}>
               <Ionicons name="ios-arrow-dropright" size={40} color="white" />
             </TouchableOpacity>
-          </View>
-          {/* <ActionButton
-          buttonColor="rgba(231,76,60,1)"
-          onPress={() => {
-            console.log('hi');
-          }}
-        /> */}
+          </View> */}
           <FloatingButton
             order={this.state.order}
             search_by={this.state.search_by}
@@ -360,7 +345,7 @@ const styles = StyleSheet.create({
 
 const FloatingButton = props => {
   return (
-    <ActionButton buttonColor="rgba(122,215,255,1)" position="center">
+    <ActionButton buttonColor="rgba(122,215,255,1)" position="right">
       {/* Sort */}
       <ActionButton.Item
         buttonColor="#9b59b6"
@@ -419,27 +404,3 @@ const FloatingButton = props => {
     </ActionButton>
   );
 };
-
-class RawModal extends Component {
-  render() {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <Button title="OPEN BOTTOM SHEET" onPress={() => this.RBSheet.open()} />
-        <RBSheet
-          ref={ref => {
-            this.RBSheet = ref;
-          }}
-          height={300}
-          duration={250}
-          customStyles={{
-            container: {
-              justifyContent: 'center',
-              alignItems: 'center',
-            },
-          }}>
-          <Text>Testing modal</Text>
-        </RBSheet>
-      </View>
-    );
-  }
-}
